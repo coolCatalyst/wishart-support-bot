@@ -1,0 +1,3 @@
+pytesseract
+unstructured
+xlrd

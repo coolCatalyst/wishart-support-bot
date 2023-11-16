@@ -1,8 +1,10 @@
 ALLOWED_FILES = [
     ".pdf",
-    ".docx",
     ".doc",
-    ".pptx"
+    ".docx",
+    ".pptx",
+    ".xls",
+    ".xlsx",
 ]
 
 dataset_folder = "PRODUCT_PDFS"
