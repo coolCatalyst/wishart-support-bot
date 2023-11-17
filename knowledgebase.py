@@ -36,7 +36,7 @@ def construct_knowledgebase(dataset_folder):
     if index_name not in pinecone.list_indexes():
         pinecone.create_index(index_name, dimension=1536, metric="cosine")
     
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     for root, dirs, files in os.walk(dataset_folder):
         for file in tqdm(files, desc=f"Processing files in {root}"):
             if file.endswith(tuple(ALLOWED_FILES)):
