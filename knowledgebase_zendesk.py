@@ -44,8 +44,10 @@ def construct_knowledgebase_zendesk(file_path):
     documents = text.split('================================================================================\n')
     documents = [d.split('\n\n')[1] for d in documents if len(d) > 10]
     
-    for d in tqdm(documents):
-        vectorstore.add_texts([d], index_name=index_name)
+    # for d in tqdm(documents):
+    #     vectorstore.add_texts([d], index_name=index_name)
+    vectorstore.add_texts(documents, index_name=index_name)
+    
     
     print(len(documents))
     # if index_name not in pinecone.list_indexes():

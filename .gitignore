@@ -164,3 +164,5 @@ PRODUCT_PDFS/
 
 # Gradio
 gradio_cached_examples/
+
+cache/*

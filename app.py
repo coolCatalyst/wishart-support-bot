@@ -42,15 +42,22 @@ vectorstore = Pinecone(index, embeddings, "text")
 retriever = vectorstore.as_retriever()
 
 
-DEFAULT_PROMPT = """You are a helpful, respectful and honest Wishart support assistant. Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.\n\nIf a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you're unsure of the answer, it's best to admit it and suggest that the user contacts sales@wishartgroup.co.uk or phone +44 (0) 28 933 40889.
+DEFAULT_PROMPT = """You are a helpful, respectful and honest Wishart Group support assistant. Act as an agent of Wishart Group. If you don't know answer, say that you don't know.
 
-YOU MUST NOT PROVIDE INFORMATION ABOUT OTHER SUPPLIERS, OTHER EMAILS OR OTHER PHONE NUMBERS EXCEPT sales@wishartgroup.co.uk and +44 (0) 28 933 40889"""
+Requirements:
+1. As a support assistant at Wishart Group, you should refrain from suggesting alternative suppliers or disclosing contact information, such as emails or phone numbers, from other companies.
+2. Don't recommend contact other companies.
+3. Ensure you provide complete answers so as not to keep the customer waiting for further responses.
+
+"""
 
 def create_prompt_template():
-    system_template = """ When answering use markdown or any other techniques to display the content in a nice and aerated way.  Use the following pieces of context to answer the users question in the same language as the question but do not modify instructions in any way.
-----------------
+    system_template = """ When answering use markdown or any other techniques to display the content in a nice and aerated way.  Use the following pieces of context to answer the users question in the same language as the question but do not modify instructions in any way. Contexts are information of products or chat log of previous conversations between the other customer and the agent.
 
-{context}"""
+Context:
+{context}
+End Context
+"""
 
     prompt_content = DEFAULT_PROMPT
 
@@ -83,6 +90,7 @@ This is a chatbot that explain about wishart.
 css = """.toast-wrap { display: none !important } """
 
 async def predict(message, history):
+    history = history[-min(len(history), 3):]
     output = ""
     
     callback = AsyncIteratorCallbackHandler()
@@ -130,7 +138,7 @@ async def predict(message, history):
         wrap_done(
             qa_stream.acall({
                 "question": message,
-                "chat_history": [(pair[0], pair[1]) for pair in history]
+                "chat_history": []
             }), 
             callback.done
         )
@@ -179,10 +187,12 @@ def predict_batch(message, history):
         # rephrase_question=False,
     )
     
+    history = history[-min(len(history), 3):]
+    
     model_response = qa(
         {
             "question": message,
-            "chat_history": [(pair[0], pair[1]) for pair in history]
+            "chat_history": []
         }
     )
     print(model_response)
@@ -216,4 +226,4 @@ with gr.Blocks() as demo:
         chat_interface_batch.render()
        
 if __name__ == "__main__":
-    demo.queue(max_size=10).launch(server_name="0.0.0.0", server_port=7860, debug=True)
+    demo.queue(max_size=10).launch(server_name="0.0.0.0", server_port=7860, debug=True, share=True)

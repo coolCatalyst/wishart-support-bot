@@ -1,3 +1,7 @@
+mysql-connector-python
+openai==0.28
+pandasai
+plotly
 pytesseract
 unstructured
 xlrd
