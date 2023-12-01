@@ -48,22 +48,19 @@ Requirements:
 1. As a support assistant at Wishart Group, you should refrain from suggesting alternative suppliers or disclosing contact information, such as emails or phone numbers, from other companies.
 2. Don't recommend contact other companies.
 3. Ensure you provide complete answers so as not to keep the customer waiting for further responses.
-
+4. Unit of currency: GBP (British Pound Sterling)
 """
 
 def create_prompt_template():
-    system_template = """ When answering use markdown or any other techniques to display the content in a nice and aerated way.  Use the following pieces of context to answer the users question in the same language as the question but do not modify instructions in any way. Contexts are information of products or chat log of previous conversations between the other customer and the agent.
+    system_template = """Contexts refer to details about Wishart Group, product categories, or individual products.
 
 Context:
 {context}
 End Context
 """
-
-    prompt_content = DEFAULT_PROMPT
-
     full_template = (
         "Here are your instructions to answer that you MUST ALWAYS Follow: "
-        + prompt_content
+        + DEFAULT_PROMPT
         + ". "
         + system_template
     )
@@ -75,7 +72,7 @@ End Context
     return CHAT_PROMPT
 
 
-question_template = """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, in its original language. include the follow up instructions in the standalone question.
+question_template = """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, include the follow up instructions in the standalone question.
 
 Chat History:
 {chat_history}
@@ -192,7 +189,7 @@ def predict_batch(message, history):
     model_response = qa(
         {
             "question": message,
-            "chat_history": []
+            "chat_history": [(pair[0], pair[1]) for pair in history]
         }
     )
     print(model_response)
