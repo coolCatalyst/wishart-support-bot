@@ -1,7 +1,11 @@
+fastapi
+langchain
 mysql-connector-python
 openai==0.28
 pandasai
+pinecone-client
 plotly
 pytesseract
 unstructured
+uvicorn
 xlrd

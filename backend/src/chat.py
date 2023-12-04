@@ -1,21 +1,9 @@
 import asyncio
-import dotenv
-import gradio as gr
 from langchain.callbacks.streaming_aiter import AsyncIteratorCallbackHandler
 from langchain.chains import ConversationalRetrievalChain, LLMChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.chat_models import ChatOpenAI
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate,
-)
-from langchain.prompts.prompt import PromptTemplate
-from langchain.vectorstores.pinecone import Pinecone
 import logging
-import os
-import pinecone
 from typing import Awaitable
 
 from src.prompt import CHAT_PROMPT, CONDENSE_QUESTION_PROMPT
