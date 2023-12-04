@@ -6,6 +6,7 @@ pandasai
 pinecone-client
 plotly
 pytesseract
+tiktoken
 unstructured
 uvicorn
 xlrd
