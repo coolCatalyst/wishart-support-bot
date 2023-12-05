@@ -62,7 +62,7 @@ async def inference_stream(message, history, model, temperature, openai_api_key,
         wrap_done(
             qa_stream.acall({
                 "question": message,
-                "chat_history": []
+                "chat_history": [(pair[0], pair[1]) for pair in history]
             }), 
             callback.done
         )

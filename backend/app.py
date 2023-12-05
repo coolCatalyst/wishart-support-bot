@@ -87,7 +87,6 @@ This is a chatbot that explain about wishart.
 css = """.toast-wrap { display: none !important } """
 
 async def predict(message, history):
-    history = history[-min(len(history), 3):]
     output = ""
     
     callback = AsyncIteratorCallbackHandler()
@@ -131,11 +130,12 @@ async def predict(message, history):
         finally:
             event.set()
     
+    history = history[-min(len(history), 3):]
     run = asyncio.create_task(
         wrap_done(
             qa_stream.acall({
                 "question": message,
-                "chat_history": []
+                "chat_history": [(pair[0], pair[1]) for pair in history]
             }), 
             callback.done
         )
