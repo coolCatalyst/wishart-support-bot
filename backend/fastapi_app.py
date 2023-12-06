@@ -1,6 +1,7 @@
 import asyncio
 import dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores.pinecone import Pinecone
@@ -10,7 +11,7 @@ import pinecone
 from typing import Awaitable
 
 from src.models.chat import ChatHistory, ChatMessage
-from src.chat import inference
+from src.chat import inference, inference_stream
 
 
 dotenv.load_dotenv()
@@ -66,6 +67,23 @@ async def chat(chat_message: ChatMessage, chat_history: ChatHistory):
     logger.info(response)
     return {"response": response}
 
+@app.post("/chat/stream")
+async def chat(chat_message: ChatMessage, chat_history: ChatHistory) -> StreamingResponse:
+    try: 
+        return StreamingResponse(
+            inference_stream(
+                message=chat_message.message,
+                history=chat_history.history,
+                model=model,
+                temperature=temperature,
+                openai_api_key=openai_api_key,
+                retriever=retriever
+            ),
+            media_type="text/event-stream",
+        )
+    except HTTPException as e:
+        raise e
+    
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=5050)

@@ -1,4 +1,5 @@
 import asyncio
+import json
 from langchain.callbacks.streaming_aiter import AsyncIteratorCallbackHandler
 from langchain.chains import ConversationalRetrievalChain, LLMChain
 from langchain.chains.question_answering import load_qa_chain
@@ -68,11 +69,12 @@ async def inference_stream(message, history, model, temperature, openai_api_key,
         )
     )
     
-    try:
+    try: 
         async for token in callback.aiter():
             logger.debug("Token: %s", token)
-            output += token
-            yield output
+            # output += token
+            # yield output
+            yield f"data: {json.dumps({'token': token})}\n\n"
     except Exception as e:
         logger.error("Error during streaming tokens: %s", e)
             
