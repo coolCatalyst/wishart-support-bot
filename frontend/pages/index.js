@@ -4,14 +4,15 @@ import { useEffect } from 'react';
 const HomePage = () => {
   const router = useRouter();
   const { chatID } = router.query;
+  const staticChatID = 'staticID'; 
 
   useEffect(() => {
     if (chatID) {
       router.push(`/${chatID}`);
     }else{
-      router.push('https://supportai.com')
+      router.push(`/${staticChatID}`);
     }
-  }, [chatID]);
+  }, [chatID, staticChatID, router]);
 
   return (
     <div>

@@ -1,5 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { postMessage, getData, leadCheck, removeData } from "../../../components/API";
+import {
+  postMessage,
+  getData,
+  leadCheck,
+  removeData,
+} from "../../../components/API";
 import { useRouter } from "next/router";
 import { autoResize } from "../../../components/utils";
 import { LeadComponent } from "../../../components/LeadComponent";
@@ -17,53 +22,19 @@ const Chatbox = () => {
   const [query, setQuery] = useState();
   const [isAsk, setIsAsk] = useState(false);
   const [leadpass, setLeadpass] = useState(false);
-  const intervalRef = useRef(null);
+  const [answer, setAnswer] = useState("");
   const divEndRef = useRef(null);
 
-  const typingEffect = async (str) => {
-    let i = 0;
-    const str_length = str.length;
-
-    intervalRef.current = setInterval(() => {
-      //console.log(intervalRef.current);
-      if (i < str_length) {
-        // Update the appropriate DOM element using React's refs
-        const msgContent = document.querySelector(
-          ".messages-list .bot-msg:nth-last-child(2) .msg-content"
-        );
-        msgContent.innerHTML = str.slice(0, i + 1);
-        i++;
-      } else {
-        clearInterval(intervalRef.current);
-        // Add your additional logic here, for example:
-        // Remove classes, scroll to bottom, etc.
-        document
-          .querySelector(".sai-chatbox-area")
-          .classList.remove("has-messages");
-        document.querySelector(".sai-chatbox-area").scrollTop =
-          document.querySelector(".sai-chatbox-area").scrollHeight;
-      }
-    }, 10);
-
-    return () => {
-      const msgContent = document.querySelector(
-        ".messages-list .bot-msg:nth-last-child(2) .msg-content"
-      );
-      msgContent.innerHTML = "";
-      clearInterval(intervalRef.current); // Clear the interval when the component unmounts
-    };
-  };
-
   const messageAction = async (message) => {
-    let chat_history, newresponse, response, botLoading;
-    
+    let chat_history, botLoading;
+
     botLoading = {
       message: <DotLoading />,
       type: "bot",
       chatbot_id: chatID,
       thread_id: threadID,
       date: Date.now(),
-      source:''
+      source: "",
     };
     chat_history = datas;
     const history_messages = chat_history.map((item) => {
@@ -71,22 +42,21 @@ const Chatbox = () => {
       return message;
     });
     const result = [];
-for (let i = 0; i < history_messages.length; i += 2) {
-  const chunk = history_messages.slice(i, i + 2);
-  result.push(chunk);
-}
+    for (let i = 0; i < history_messages.length; i += 2) {
+      const chunk = history_messages.slice(i, i + 2);
+      result.push(chunk);
+    }
 
-    
     setData((prevData) => [...prevData, botLoading]);
     const textArea = document.getElementById("autosize-textarea");
     textArea.style.removeProperty("height");
-    response = await postMessage(chatID, threadID, message, result);
-    newresponse = {
-      message:response.response,
-        // response.success == true
-        //   ? response.answer
-        //   : "An error occurred, I'm unable to answer your question.",
-      source:"",
+    await postMessage(message, result, setAnswer);
+  };
+
+  const displayAnswer = async()=>{
+    const newresponse = {
+      message: answer,
+      source: "",
       type: "bot",
       chatbot_id: chatID,
       thread_id: threadID,
@@ -99,11 +69,7 @@ for (let i = 0; i < history_messages.length; i += 2) {
       }
       return newData; // Return the updated data array
     });
-    await typingEffect(response.response);
-      // await typingEffect(response.success == true
-      //   ? response.answer
-      //   : "An error occurred, I'm unable to answer your question.");
-  };
+  }
 
   const sendMessage = async (message) => {
     const newMessage = {
@@ -115,7 +81,7 @@ for (let i = 0; i < history_messages.length; i += 2) {
     };
     if (datas.length === 0) {
       await setData([newMessage]);
-    }else{
+    } else {
       await setData((prevData) => [...prevData, newMessage]);
     }
     // } else if (datas[datas.length - 1].type === "bot") {
@@ -130,7 +96,7 @@ for (let i = 0; i < history_messages.length; i += 2) {
     //   });
     // }
     //console.log(datas)
-    
+
     setQuery("");
     if (!leadpass) {
       if (
@@ -138,7 +104,7 @@ for (let i = 0; i < history_messages.length; i += 2) {
         config["collect_leads"] === "on"
       ) {
         setIsAsk(true);
-        console.log('hereeeeeee')
+        console.log("hereeeeeee");
         divEndRef.current.scrollIntoView({ behavior: "smooth" });
       } else if (
         config["collect_leads"] === "on" &&
@@ -148,7 +114,7 @@ for (let i = 0; i < history_messages.length; i += 2) {
         await messageAction(message);
         setIsAsk(true);
         divEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }else{
+      } else {
         messageAction(message);
       }
     } else {
@@ -160,16 +126,18 @@ for (let i = 0; i < history_messages.length; i += 2) {
     //console.log("Refresh");
     removeData(chatID, threadID);
     setData([]);
-
   };
 
   const closeChat = () => {
     //console.log("Close");
-    window.parent.postMessage({ isOpen: false }, '*');
+    window.parent.postMessage({ isOpen: false }, "*");
   };
-
-  useEffect(()=>{
-    divEndRef.current.scrollIntoView({ behavior: "smooth" })
+  useEffect(() => {
+    
+    displayAnswer()
+  }, [answer]); 
+  useEffect(() => {
+    divEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [datas, isAsk]);
 
   useEffect(() => {
@@ -213,8 +181,8 @@ for (let i = 0; i < history_messages.length; i += 2) {
       <Header config={config} refreshChat={refreshChat} closeChat={closeChat} />
       <div className="sai-chatbox-area">
         <div className="flex flex-1 flex-col justify-end gap-2 messages-list">
-          <WelcomeComponent config={config}/>
-          <MainComponent config={config} datas={datas}/>
+          <WelcomeComponent config={config} />
+          <MainComponent config={config} datas={datas} />
           <div className="bot-msg" ref={divEndRef}>
             {isAsk && !leadpass ? (
               <LeadComponent

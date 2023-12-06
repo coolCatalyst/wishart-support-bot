@@ -95,12 +95,12 @@ export const Footer = ({config, query, setQuery, sendMessage}) => {
           <p>
             Powered by{" "}
             <a
-              href="https://supportai.com"
+              href="https://wishartgroup.co.uk"
               className="primary-color"
               target="_blank"
               style={primaryStyle}
             >
-              SupportAI
+              wishartgroup
             </a>
           </p>
         </div>
