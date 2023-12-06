@@ -2,8 +2,8 @@ import { RefreshIcon, CloseIcon } from "../Icons";
 
 export const Header = ({ config, refreshChat, closeChat }) => {
   const headerStyle = {
-    backgroundColor: config["header-background"],
-    color: config["header-font-color"],
+    backgroundColor: 'rgb(255, 255, 255)',
+    color: 'rgb(238, 17, 71)',
   };
 
   const headerColorStyle = {
@@ -16,7 +16,7 @@ export const Header = ({ config, refreshChat, closeChat }) => {
         className="sai-chatbox-title current-chatbot-name"
         // contentEditable="true"
       >
-        {config.chatbot_name}
+        {'WishartGroup'}
       </div>
       <div className="sai-btns">
         <button

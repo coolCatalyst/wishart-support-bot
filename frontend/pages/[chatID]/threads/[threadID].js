@@ -50,6 +50,7 @@ const Chatbox = () => {
     setData((prevData) => [...prevData, botLoading]);
     const textArea = document.getElementById("autosize-textarea");
     textArea.style.removeProperty("height");
+    
     await postMessage(message, result, setAnswer);
   };
 
@@ -157,12 +158,11 @@ const Chatbox = () => {
         try {
           //console.log(chatID, threadID);
           let configuration = await getData(chatID);
-          const parsedData = JSON.parse(configuration[0].configuration);
-          console.log(parsedData);
+          console.log(configuration);
           let messages = [];
           let checkLead = await leadCheck(threadID, chatID);
           //console.log('checkcheck',checkLead)
-          await setConfig(parsedData);
+          await setConfig(configuration);
           await setData(messages);
           await setLeadpass(checkLead);
           //console.log(document.body.scrollHeight);

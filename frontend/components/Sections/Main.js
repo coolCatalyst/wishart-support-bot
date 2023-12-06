@@ -27,7 +27,7 @@ export const MainComponent = ({ datas, config }) => {
                 <div className="sai-msg-header">
                   <img
                     className="sai-msg-logo"
-                    src={config["bot-avatar"]}
+                    src='/img/wishart.png'
                     alt="Bot Avatar"
                   />
                   <span className="sai-msg-name">{config.chatbot_name}</span>

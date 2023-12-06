@@ -98,7 +98,7 @@ export const Footer = ({config, query, setQuery, sendMessage}) => {
               href="https://wishartgroup.co.uk"
               className="primary-color"
               target="_blank"
-              style={primaryStyle}
+              style={{color:"rgb(238, 17, 71)"}}
             >
               wishartgroup
             </a>

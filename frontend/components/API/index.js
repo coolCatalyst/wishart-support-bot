@@ -1,65 +1,68 @@
 import { supabaseUrl, supabaseKey, baseURL, leadURL } from "../../config";
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
+import { config } from "../../config/config";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 export async function getData(ID) {
-  let data;
-
-  data = await supabase.from("chatbots").select("*").eq("id", ID);
-
-  return data.data;
+  return config;
 }
 
 export async function postMessage(message, chat_history, setAnswer) {
   console.log("chathistory", chat_history);
 
-  const response = await fetch(baseURL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "text/event-stream",
-      // Add other headers as needed
-    },
-    responseType: "stream",
-    body: JSON.stringify({
-      chat_message: { message: message },
-      chat_history: { history: chat_history },
-    }),
-  });
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-
-  reader.read().then(async function processStream({ done, value }) {
-    if (done) {
-      console.log("Stream complete");
-      return;
-    }
-
-    // Value is a Uint8Array
-    const dataStrings = decoder
-    .decode(value)
-    .trim()
-    .split("data: ")
-    .filter(Boolean);
-
-    // You'll want to process this, parsing JSON strings as necessary and adding them to state
-    dataStrings.forEach(async(data) => {
-      try {
-        const parsedData = JSON.parse(data);
-        console.log(parsedData['token'])
-        await setAnswer(prevMessages => prevMessages+ parsedData['token']);
-        // sleep(1000)
-      } catch (error) {
-        console.error("Error parsing data:", error);
-      }
+  try{
+    const response = await fetch(baseURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/event-stream",
+        // Add other headers as needed
+      },
+      responseType: "stream",
+      body: JSON.stringify({
+        chat_message: { message: message },
+        chat_history: { history: chat_history },
+      }),
     });
-    // Read more stream data
-    return reader.read().then(processStream);
-  });
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+  
+    reader.read().then(async function processStream({ done, value }) {
+      if (done) {
+        console.log("Stream complete");
+        return;
+      }
+  
+      // Value is a Uint8Array
+      const dataStrings = decoder
+        .decode(value)
+        .trim()
+        .split("data: ")
+        .filter(Boolean);
+  
+      // You'll want to process this, parsing JSON strings as necessary and adding them to state
+      await setAnswer('');
+      dataStrings.forEach(async (data) => {
+        try {
+          const parsedData = JSON.parse(data);
+          console.log(parsedData["token"]);
+          await setAnswer((prevMessages) => prevMessages + parsedData["token"]);
+          // sleep(1000)
+        } catch (error) {
+          console.error("Error parsing data:", error);
+        }
+      });
+      // Read more stream data
+      return reader.read().then(processStream);
+    });
+  }catch{
+    await setAnswer('Network error occured');
+  }
+  
 }
 
 export async function leadCheck(thread_id, chatbot_id) {

@@ -1,3 +1,4 @@
+
 export const WelcomeComponent = ({config}) => {
   return (
     <div className="bot-msg">
@@ -5,8 +6,8 @@ export const WelcomeComponent = ({config}) => {
         <></>
       ) : (
         <div className="sai-msg-header">
-          <img className="sai-msg-logo" src={config["bot-avatar"]} />
-          <span className="sai-msg-name">{config.chatbot_name}</span>
+          <img className="sai-msg-logo" src='/img/wishart.png'/>
+          <span className="sai-msg-name">{'Wishart'}</span>
         </div>
       )}
       <div className="sai-msg">
