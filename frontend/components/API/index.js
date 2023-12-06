@@ -3,7 +3,7 @@ import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
 import { config } from "../../config/config";
 
-const baseURL = process.env.BACKEND_URL;
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const supabase = createClient(supabaseUrl, supabaseKey);
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -14,6 +14,7 @@ export async function getData(ID) {
 
 export async function postMessage(message, chat_history, setAnswer) {
   console.log("chathistory", chat_history);
+  console.log("baseurl", baseURL);
 
   try{
     const response = await fetch(baseURL, {
@@ -29,6 +30,7 @@ export async function postMessage(message, chat_history, setAnswer) {
         chat_history: { history: chat_history },
       }),
     });
+    await setAnswer('');
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
   
@@ -46,7 +48,7 @@ export async function postMessage(message, chat_history, setAnswer) {
         .filter(Boolean);
   
       // You'll want to process this, parsing JSON strings as necessary and adding them to state
-      await setAnswer('');
+      
       dataStrings.forEach(async (data) => {
         try {
           const parsedData = JSON.parse(data);
