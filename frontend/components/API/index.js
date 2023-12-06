@@ -1,9 +1,8 @@
-import { supabaseUrl, supabaseKey, leadURL } from "../../config";
+import { supabaseUrl, supabaseKey, baseURL, leadURL } from "../../config";
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
 import { config } from "../../config/config";
 
-const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const supabase = createClient(supabaseUrl, supabaseKey);
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -14,9 +13,8 @@ export async function getData(ID) {
 
 export async function postMessage(message, chat_history, setAnswer) {
   console.log("chathistory", chat_history);
-  console.log("baseurl", baseURL);
 
-  try{
+  try {
     const response = await fetch(baseURL, {
       method: "POST",
       headers: {
@@ -30,25 +28,23 @@ export async function postMessage(message, chat_history, setAnswer) {
         chat_history: { history: chat_history },
       }),
     });
-    await setAnswer('');
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-  
+    await setAnswer("");
     reader.read().then(async function processStream({ done, value }) {
       if (done) {
         console.log("Stream complete");
         return;
       }
-  
+
       // Value is a Uint8Array
       const dataStrings = decoder
         .decode(value)
-        .trim()
         .split("data: ")
         .filter(Boolean);
-  
+
       // You'll want to process this, parsing JSON strings as necessary and adding them to state
-      
+
       dataStrings.forEach(async (data) => {
         try {
           const parsedData = JSON.parse(data);
@@ -62,10 +58,9 @@ export async function postMessage(message, chat_history, setAnswer) {
       // Read more stream data
       return reader.read().then(processStream);
     });
-  }catch{
-    await setAnswer('Network error occured');
+  } catch {
+    await setAnswer("Network error occured");
   }
-  
 }
 
 export async function leadCheck(thread_id, chatbot_id) {

@@ -1549,3 +1549,12 @@ p.timeago {
 .close-lead-form:hover {
     transform: scale(1.1);
 }
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 5px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
