@@ -42,6 +42,7 @@ origins = [
     "http://localhost",
     "http://localhost:3000",
     "http://localhost:3001",
+    "https://wishart-support-bot-frontend-ai-general1s-projects.vercel.app/"
 ]
 
 app.add_middleware(
