@@ -196,8 +196,8 @@ def predict_batch(message, history):
     return model_response['answer']
 
 
-chatbot_stream = gr.Chatbot(avatar_images=('user.png', 'wishart.png'), bubble_full_width = False)
-chatbot_batch = gr.Chatbot(avatar_images=('user.png', 'wishart.png'), bubble_full_width = False)
+chatbot_stream = gr.Chatbot(avatar_images=('public/user.png', 'public/wishart.png'), bubble_full_width = False)
+chatbot_batch = gr.Chatbot(avatar_images=('public/user.png', 'public/wishart.png'), bubble_full_width = False)
 chat_interface_stream = gr.ChatInterface(predict, 
                  title=title, 
                  description=description, 
