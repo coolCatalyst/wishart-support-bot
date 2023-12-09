@@ -25,7 +25,7 @@ export const LeadComponent = ({
       lead_datas.push({[lead]: values[lead]});
     }
     console.log(lead_datas);
-    const response = await postLead(chat_id, thread_id, lead_datas);
+    const response = await postLead(chat_id, lead_datas);
     if (response == true) {
       setClose(true);
       if (force=="on") {

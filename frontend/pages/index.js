@@ -1,18 +1,20 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { v4 as uuidv4 } from "uuid";
 
 const HomePage = () => {
   const router = useRouter();
-  const { chatID } = router.query;
-  const staticID = "chat"
 
   useEffect(() => {
-    if (chatID) {
-      router.push(`/${chatID}`);
-    }else{
-      router.push(`/${staticID}`);
+    let chatID;
+    chatID = localStorage.getItem('chatID');
+    //console.log('first loading', threadId)
+    if (chatID == null) {
+      chatID = uuidv4();
+      localStorage.setItem('chatID', chatID);
     }
-  }, [chatID]);
+    router.push(`/${chatID}`);
+  }, []);
 
   return (
     <div>

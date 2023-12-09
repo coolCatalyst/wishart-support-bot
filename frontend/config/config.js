@@ -31,7 +31,7 @@ export const config = {
         }
     ],
     "leads-title": "Let us know how to contact you",
-    "collect_leads": "off",
-    "force_lead_collecting": "off",
-    "lead_fields": []
+    "collect_leads": "on",
+    "force_lead_collecting": "on",
+    "lead_fields": ["email"]
 }
