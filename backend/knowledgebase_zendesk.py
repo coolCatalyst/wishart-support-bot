@@ -6,7 +6,7 @@ import openai
 import pinecone
 from tqdm import tqdm
 
-from constants import dataset_folder, ALLOWED_FILES
+from src.constants import dataset_folder, ALLOWED_FILES
 from parsers.doc import process_doc
 from parsers.docx import process_docx
 from parsers.pdf import process_pdf

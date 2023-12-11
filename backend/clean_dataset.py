@@ -1,6 +1,6 @@
 import os
 
-from constants import ALLOWED_FILES, dataset_folder
+from src.constants import ALLOWED_FILES, dataset_folder
 
 def clean_dataset(folder_path):
     for root, dirs, files in os.walk(folder_path):

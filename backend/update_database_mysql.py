@@ -20,8 +20,9 @@ pinecone.init(
 )
 index_name = os.getenv("PINECONE_INDEX_NAME")
 index = pinecone.Index(index_name)
-if index_name not in pinecone.list_indexes():
-    pinecone.create_index(index_name, dimension=1536, metric="cosine")
+# if index_name not in pinecone.list_indexes():
+pinecone.delete_index(index_name)
+pinecone.create_index(index_name, dimension=1536, metric="cosine")
     
 # Replace the following variables with your own details
 host = os.getenv("MYSQL_HOST")  # or the IP/hostname if the database is on a remote server
@@ -122,13 +123,14 @@ for record in tqdm(df_dictionary['category'].iloc):
     categories.append(process_category_record(record))
 upsert_pinecone(index, categories)
 
-# products = []
-# for record in tqdm(df_dictionary['product'].iloc):
-#     products.append(process_product_record(record))
+products = []
+for record in tqdm(df_dictionary['product'].iloc):
+    products.append(process_product_record(record))
     
-# pickle.dump(products, open('products.pkl', 'wb'))
+pickle.dump(products, open('products.pkl', 'wb'))
+print("Done!")
 
-with open('products.pkl', 'rb') as f:
-    products = pickle.load(f)
+# with open('products.pkl', 'rb') as f:
+#     products = pickle.load(f)
 
 upsert_pinecone(index, products, batch_size=10)
