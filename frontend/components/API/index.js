@@ -1,8 +1,9 @@
-import { supabaseUrl, supabaseKey, baseURL, leadURL } from "../../config";
+import { supabaseUrl, supabaseKey, leadURL } from "../../config";
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
 import { config } from "../../config/config";
 
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL
 const supabase = createClient(supabaseUrl, supabaseKey);
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
