@@ -12,10 +12,10 @@ export async function getData(ID) {
   return config;
 }
 
-async function insertMessage(chatID, appendString) {
+async function insertMessage(chatID, message, answer) {
   const { data, error } = await supabase
     .from('Messages')
-    .insert({ 'ChatID': chatID, 'Content': appendString });
+    .insert({ 'ChatID': chatID, 'User': message, "Bot": answer });
   if (error) {
     console.error('Error inserting data:', error);
     return null;
@@ -50,7 +50,7 @@ export async function postMessage(message, chat_history, setAnswer, chatID) {
 
       if (done) {
         console.log("Stream complete");
-        await insertMessage(chatID, "[" + message + "], [" + finalData + "]")
+        await insertMessage(chatID, message, finalData)
         console.log('here', await reader.read())
         return;
       }
@@ -112,10 +112,11 @@ export async function removeData(chat_id, thread_id) {
 
 export async function postLead(chat_id, leadData) {
   let result;
+  console.log(leadData)
   const { data, error } = await supabase
     .from('Leads')
     .insert([
-      { 'ChatID': chat_id, 'Lead': leadData } // Replace with actual column names and values
+      { 'ChatID': chat_id, 'Country': leadData[0]['country'], 'Email':leadData[1]['email'] } // Replace with actual column names and values
     ]);
 
   if (error) {
