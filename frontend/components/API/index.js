@@ -50,7 +50,7 @@ export async function postMessage(message, chat_history, setAnswer, chatID) {
 
       if (done) {
         console.log("Stream complete");
-        await insertMessage(chatID, ",[" + message + "," + finalData + "]")
+        await insertMessage(chatID, "[" + message + "," + finalData + "]")
         console.log('here', await reader.read())
         return;
       }
