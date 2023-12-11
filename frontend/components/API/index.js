@@ -1,8 +1,11 @@
-import { supabaseUrl, supabaseKey, leadURL } from "../../config";
+import { leadURL } from "../../config";
 import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
 import { config } from "../../config/config";
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const chatURL = `${backendURL}/chat/stream`;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 function sleep(ms) {
@@ -29,7 +32,7 @@ export async function postMessage(message, chat_history, setAnswer, chatID) {
   console.log("chathistory", chat_history);
 
   try {
-    const response = await fetch(baseURL, {
+    const response = await fetch(chatURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

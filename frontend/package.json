@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "ENV_PATH='.env.development'next dev ",
+    "dev": "ENV_PATH='.env.development' next dev ",
     "start": "next start"
   },
   "dependencies": {
