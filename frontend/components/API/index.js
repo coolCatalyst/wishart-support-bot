@@ -12,47 +12,17 @@ export async function getData(ID) {
   return config;
 }
 
-async function concatenateStringToColumn(chatID, appendString) {
-  try {
-    // Fetch the original data
-    let { data, error } = await supabase
-      .from('Messages')
-      .select("Content")
-      .eq('ChatID', chatID)
-    // .single();
-    console.log('data: ', data, '\n Error: ', error)
-
-    if (error) {
-      console.log('here')
-      // data = ""
-    };
-
-
-    // Check if the column data exists
-    if (data.length > 0) {
-      console.log('1111111111111111111', data[0]['Content'])
-      // Concatenate new string with existing data
-
-      const updatedValue = data[0]['Content'] + appendString;
-      console.log('updatedValue: ',)
-
-      // Update the data with the concatenated string
-      const { data: updatedData, error: updateError } = await supabase
-        .from('Messages')
-        .update({ 'Content': updatedValue })
-        .eq('ChatID', chatID);
-      if (updateError) throw updateError;
-      // Successfully updated the record
-      console.log('Successfully updated record:', updatedData);
-    } else {
-      const { data, error } = await supabase
-        .from('Messages')
-        .insert({ 'ChatID': chatID, 'Content': appendString })
-      console.log('here', data)
-    }
-  } catch (error) {
-    console.error('Error:', error);
+async function insertMessage(chatID, appendString) {
+  const { data, error } = await supabase
+    .from('Messages')
+    .insert({ 'ChatID': chatID, 'Content': appendString });
+  if (error) {
+    console.error('Error inserting data:', error);
+    return null;
   }
+
+  console.log('Inserted data:', data);
+  return true;
 }
 
 export async function postMessage(message, chat_history, setAnswer, chatID) {
@@ -80,8 +50,7 @@ export async function postMessage(message, chat_history, setAnswer, chatID) {
 
       if (done) {
         console.log("Stream complete");
-        await concatenateStringToColumn(chatID,  ",["+message+","+finalData+"]")
-        // await insertData(chatID, [message, finalData].toString());
+        await insertMessage(chatID, ",[" + message + "," + finalData + "]")
         console.log('here', await reader.read())
         return;
       }
