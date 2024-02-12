@@ -43,6 +43,8 @@ origins = [
     "http://localhost:3000",
     "http://localhost:3001",
     "https://wishart-support-bot-frontend-ai-general1s-projects.vercel.app",
+    "https://wishart-support-bot-frontend.vercel.app",
+    "https://wishartgroupbot.vercel.app"
     "https://wishartgroup.co.uk"
 ]
 
